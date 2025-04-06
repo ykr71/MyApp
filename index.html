@@ -2,15 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>予約開始ジャストアクセス補助</title>
+  <title>予約アクセス補助PWA - テストモード</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
-  <h1>予約ジャスト狙い補助</h1>
-  <p>現在の通信遅延: <span id="latency">未測定</span></p>
+  <h1>【テスト】予約ジャスト狙い補助</h1>
+  <p>通信遅延: <span id="latency">未測定</span></p>
   <button id="start">カウントダウン開始</button>
   <p id="countdown">未スタート</p>
   <p id="status"></p>
@@ -28,13 +28,13 @@
       return latency;
     }
 
-    let targetTime = new Date();
-    targetTime.setHours(11, 0, 0, 0); // ← 必要なら時間を変えてテストしてね
-
     let latencyGuess = 0;
 
     async function startCountdown() {
       latencyGuess = await measurePing();
+
+      // テスト用に「今から10秒後」を目標時間に設定
+      const targetTime = new Date(Date.now() + 10000);
 
       const interval = setInterval(() => {
         const now = new Date();
@@ -43,9 +43,10 @@
         if (diff <= 0) {
           clearInterval(interval);
           document.getElementById("status").textContent = "アクセス中...";
-          window.location.href = "https://example.com"; // ← ここを本番の予約URLに変えてね
+          window.location.href = "https://example.com"; // ← テスト用URL
         } else {
-          document.getElementById("countdown").textContent = Math.floor(diff / 1000) + " 秒後にアクセス";
+          document.getElementById("countdown").textContent =
+            Math.ceil(diff / 1000) + " 秒後にアクセス";
         }
       }, 100);
     }
