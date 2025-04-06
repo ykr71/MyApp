@@ -7,19 +7,29 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <script defer>
-    // 通信遅延測定
+</head>
+<body>
+  <h1>予約ジャスト狙い補助</h1>
+  <p>現在の通信遅延: <span id="latency">未測定</span></p>
+  <button id="start">カウントダウン開始</button>
+  <p id="countdown">未スタート</p>
+  <p id="status"></p>
+
+  <script>
     async function measurePing() {
       const start = Date.now();
-      await fetch("https://www.google.com/favicon.ico", { cache: "no-store" });
+      try {
+        await fetch("https://www.google.com/favicon.ico", { cache: "no-store" });
+      } catch (e) {
+        console.error("通信エラー", e);
+      }
       const latency = Date.now() - start;
       document.getElementById("latency").textContent = latency + " ms";
       return latency;
     }
 
-    // カウントダウン＆自動遷移
     let targetTime = new Date();
-    targetTime.setHours(11, 0, 0, 0); // 11:00:00 に設定
+    targetTime.setHours(11, 0, 0, 0); // ← 必要なら時間を変えてテストしてね
 
     let latencyGuess = 0;
 
@@ -33,7 +43,7 @@
         if (diff <= 0) {
           clearInterval(interval);
           document.getElementById("status").textContent = "アクセス中...";
-          window.location.href = "https://example.com"; // ←ここを予約URLに変更！
+          window.location.href = "https://example.com"; // ← ここを本番の予約URLに変えてね
         } else {
           document.getElementById("countdown").textContent = Math.floor(diff / 1000) + " 秒後にアクセス";
         }
@@ -44,12 +54,5 @@
       document.getElementById("start").onclick = startCountdown;
     };
   </script>
-</head>
-<body>
-  <h1>予約ジャスト狙い補助</h1>
-  <p>現在の通信遅延: <span id="latency">未測定</span></p>
-  <button id="start">カウントダウン開始</button>
-  <p id="countdown">未スタート</p>
-  <p id="status"></p>
 </body>
 </html>
